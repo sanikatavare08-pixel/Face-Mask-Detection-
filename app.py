@@ -12,7 +12,7 @@ st.set_page_config(
 )
 
 # ---------------- Load Model ----------------
-model = load_model("mask_final.tflite")
+model = load_model("mask_final.keras")
 
 # ---------------- Session State ----------------
 if "open_camera" not in st.session_state:

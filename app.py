@@ -232,7 +232,7 @@ if st.session_state.open_camera:
         if prob > 0.5:
 
             st.markdown(
-                "<div class='result-bad'>❌😊 WITHOUT MASK</div>",
+                "<div class='result-bad'>❌😊WITHOUT MASK</div>",
                 unsafe_allow_html=True
             )
 
@@ -241,7 +241,7 @@ if st.session_state.open_camera:
         else:
 
             st.markdown(
-                "<div class='result-good'>✅😷 WITH MASK</div>",
+                "<div class='result-good'>✅😷WITH MASK</div>",
                 unsafe_allow_html=True
             )
 

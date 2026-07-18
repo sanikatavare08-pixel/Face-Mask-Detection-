@@ -12,7 +12,23 @@ st.set_page_config(
 )
 
 # ---------------- Load Model ----------------
+import os
+import gdown
+from tensorflow.keras.models import load_model
+
+FILE_ID = "1fSLHyKh8-l3_9AM_-61V90QNLAkncqgm"
+
+if not os.path.exists("mask_final.keras"):
+    gdown.download(
+        f"https://drive.google.com/uc?id={FILE_ID}",
+        "mask_final.keras",
+        quiet=False
+    )
+
 model = load_model("mask_final.keras")
+
+
+#model = load_model("https://drive.google.com/file/d/1fSLHyKh8-l3_9AM_-61V90QNLAkncqgm/view?usp=drive_link")
 
 # ---------------- Session State ----------------
 if "open_camera" not in st.session_state:
@@ -139,9 +155,49 @@ with left:
 
     uploaded_file = st.file_uploader(
         "📂 Upload Face Image",
-        type=["jpg","jpeg","png"]
+        type=["jpg", "jpeg", "png"]
     )
 
+    # ---------- Uploaded Image Prediction ----------
+    if uploaded_file is not None:
+
+        img = Image.open(uploaded_file)
+
+        st.image(
+            img,
+            caption="Uploaded Image",
+            use_container_width=True
+        )
+
+        prob = predict_mask(img)
+
+        st.write("### Prediction")
+
+        if prob > 0.5:
+
+            st.markdown(
+                "<div class='result-bad'>❌ WITHOUT MASK</div>",
+                unsafe_allow_html=True
+            )
+
+            confidence = prob
+
+        else:
+
+            st.markdown(
+                "<div class='result-good'>✅ WITH MASK</div>",
+                unsafe_allow_html=True
+            )
+
+            confidence = 1 - prob
+
+        st.write("### Confidence")
+
+        st.progress(float(confidence))
+
+        st.metric("Confidence", f"{confidence:.2%}")
+
+    # ---------- Camera Buttons ----------
     col1, col2 = st.columns(2)
 
     with col1:
@@ -151,7 +207,6 @@ with left:
     with col2:
         if st.button("❌ Close Camera"):
             st.session_state.open_camera = False
-
 
 # ---------------- Camera ----------------
 if st.session_state.open_camera:
@@ -177,7 +232,7 @@ if st.session_state.open_camera:
         if prob > 0.5:
 
             st.markdown(
-                "<div class='result-bad'>❌ WITHOUT MASK</div>",
+                "<div class='result-bad'>❌😊 WITHOUT MASK</div>",
                 unsafe_allow_html=True
             )
 
@@ -186,7 +241,7 @@ if st.session_state.open_camera:
         else:
 
             st.markdown(
-                "<div class='result-good'>✅ WITH MASK</div>",
+                "<div class='result-good'>✅😷 WITH MASK</div>",
                 unsafe_allow_html=True
             )
 
